@@ -1,4 +1,17 @@
 function haze_free_img = Haze_Removal(img, omega, patch_size, lambda)
+%HAZE_REMOVAL remove haze from haze image
+
+%deal with gray picture
+if numel(size(img)) == 2
+    [m, n] = size(img);
+    image = zeros(m, n, 3);
+    for c = 1:3
+        image(:,:,c) = img;
+    end
+    img = image;
+end
+
+img = double(img) ./ 255;
 [m, n, ~] = size(img);
 
 %% dark channel
@@ -13,16 +26,13 @@ for i = 1:m
     end
 end
 
-%haze_free_img = uint8(zeros(m, n, 3));
-%haze_free_img(:,:,1) = J_dark;
-%haze_free_img(:,:,2) = J_dark;
-%haze_free_img(:,:,3) = J_dark;
 %% Estimating the Atmospheric Light
 num_pixels = floor(m*n*0.01);
 dark_vec = reshape(J_dark, m*n, 1);
 img_vec = reshape(img, m*n, 3);
 [~, idx] = sort(dark_vec, 'descend');
 A = mean(img_vec(idx(1:num_pixels), :));
+%A = max(img_vec(idx(1:num_pixels), :));
 
 %% Estimating the Transmission
 A = reshape(A, [1, 1, 3]);
@@ -39,7 +49,7 @@ end
 %% Soft Matting
 L = Laplacian(double(img));
 trans = reshape(trans, m*n, 1);
-t = (L + lambda * eye(size(L, 1))) \ (lambda * trans);
+t = (L + lambda * speye(size(L, 1))) \ (lambda * trans);
 t = reshape(t, m, n);
 
 %% Recovering the Scene Radiance

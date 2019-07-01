@@ -1,7 +1,9 @@
 path = 'haze_img/';
-img = imread([path, 'pic_3.jpg']);
-img = double(img)/255;
-%img = imresize(img, 0.1);
-img = imresize(img, [100 200]);
+dpath = 'haze_free_img/';
+imgname = 'pic_8.bmp';
+img = imread([path, imgname]);
 haze_free_img = Haze_Removal(img, 0.95, 15, 0.0001);
+
+imwrite(haze_free_img, [dpath, imgname]);
+figure;
 imshow(haze_free_img);
