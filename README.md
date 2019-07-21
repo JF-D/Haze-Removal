@@ -2,7 +2,10 @@
 This is a implementation of removing haze from single image base on dark channel prior.
 
 # run
-just run the script `run.m`
+just run the script `run.m`. The input image should be set in `run.m` code.c
+
+# input
+the input is in `haze_img` fold.
 
 # Output
 the output is in `haze_free_img` fold.
